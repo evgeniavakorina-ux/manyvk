@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Где твоя точка роста в доходе</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F1E6;
+    --cream-alt:#EEE4D2;
+    --paper:#FBF7EF;
+    --burgundy:#6E1E2B;
+    --burgundy-deep:#43121B;
+    --gold:#B8923E;
+    --gold-light:#D8BC7B;
+    --ink:#2A1810;
+    --ink-soft:#5C4A3D;
+    --line: rgba(110,30,43,0.15);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Cormorant Garamond', serif;
+    font-size:19px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{
+    max-width:640px;
+    margin:0 auto;
+    min-height:100vh;
+    padding:0 22px;
+    display:flex;
+    flex-direction:column;
+  }
+  h1,h2,h3{
+    font-family:'Playfair Display', serif;
+    font-weight:600;
+    margin:0;
+    color:var(--burgundy-deep);
+  }
+  .eyebrow{
+    font-family:'Cormorant Garamond', serif;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    font-size:13px;
+    color:var(--gold);
+    font-weight:600;
+  }
+  .screen{
+    display:none;
+    flex:1;
+    flex-direction:column;
+    animation:fadeIn .5s ease;
+  }
+  .screen.active{display:flex;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  /* ---------- COVER ---------- */
+  #screen-cover{justify-content:center; text-align:center; padding:60px 0 40px;}
+  .cover-mark{
+    width:64px; height:64px; margin:0 auto 28px;
+    border:1px solid var(--gold);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .cover-mark svg{width:26px; height:26px;}
+  #screen-cover h1{font-size:38px; line-height:1.16; margin-bottom:16px;}
+  #screen-cover .lede{font-size:20px; color:var(--ink-soft); max-width:460px; margin:0 auto 34px;}
+  .cover-points{
+    display:flex; flex-direction:column; gap:10px;
+    text-align:left; max-width:400px; margin:0 auto 38px;
+    font-size:17px; color:var(--ink-soft);
+  }
+  .cover-points div{display:flex; gap:12px; align-items:flex-start;}
+  .cover-points span.n{
+    font-family:'Playfair Display', serif; color:var(--gold); font-weight:600; font-size:16px; flex-shrink:0;
+  }
+  .meta-row{
+    display:flex; justify-content:center; gap:26px; margin-bottom:34px;
+    font-size:14px; letter-spacing:.05em; color:var(--ink-soft);
+  }
+  .meta-row b{color:var(--burgundy); font-weight:600;}
+
+  /* ---------- BUTTONS ---------- */
+  .btn{
+    font-family:'Cormorant Garamond', serif;
+    font-size:19px; font-weight:600; letter-spacing:.03em;
+    padding:16px 30px;
+    border-radius:2px;
+    border:1px solid var(--burgundy);
+    background:var(--burgundy);
+    color:var(--cream);
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    transition:all .2s ease;
+  }
+  .btn:hover{background:var(--burgundy-deep); border-color:var(--burgundy-deep);}
+  .btn-outline{background:transparent; color:var(--burgundy); border:1px solid var(--burgundy);}
+  .btn-outline:hover{background:var(--burgundy); color:var(--cream);}
+  .btn-text{background:none; border:none; color:var(--burgundy); text-decoration:underline; font-size:16px; padding:6px;}
+  .btn-block{width:100%;}
+
+  /* ---------- PROGRESS ---------- */
+  .progress-wrap{padding:22px 0 8px;}
+  .progress-track{
+    height:2px; background:var(--line); border-radius:2px; overflow:hidden; margin-bottom:10px;
+  }
+  .progress-fill{
+    height:100%; background:var(--gold); width:0%; transition:width .35s ease;
+  }
+  .progress-label{
+    display:flex; justify-content:space-between; font-size:13px;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft);
+  }
+  .progress-label b{color:var(--burgundy);}
+
+  /* ---------- QUESTION ---------- */
+  #screen-quiz{padding:6px 0 30px; justify-content:flex-start;}
+  .q-text{
+    font-family:'Playfair Display', serif;
+    font-size:26px; line-height:1.32; color:var(--burgundy-deep);
+    margin:22px 0 30px;
+    min-height:96px;
+  }
+  .options{display:flex; flex-direction:column; gap:12px; margin-bottom:26px;}
+  .option{
+    display:flex; align-items:center; gap:16px;
+    border:1px solid var(--line);
+    background:var(--paper);
+    padding:15px 18px;
+    border-radius:2px;
+    cursor:pointer;
+    transition:all .18s ease;
+    text-align:left;
+  }
+  .option:hover{border-color:var(--gold); background:var(--cream-alt);}
+  .option.selected{border-color:var(--burgundy); background:var(--cream-alt);}
+  .option .dot{
+    flex-shrink:0; width:26px; height:26px; border-radius:50%;
+    border:1px solid var(--gold);
+    position:relative;
+  }
+  .option.selected .dot{border-color:var(--burgundy); background:var(--burgundy);}
+  .option.selected .dot::after{
+    content:"✓"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    color:var(--cream); font-size:13px;
+  }
+  .option .label{font-size:18px; color:var(--ink);}
+  .option .sub{display:block; font-size:14px; color:var(--ink-soft); margin-top:1px;}
+  .nav-row{display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:10px;}
+  .back-link{
+    font-size:15px; color:var(--ink-soft); text-decoration:underline; cursor:pointer; background:none; border:none; font-family:'Cormorant Garamond', serif;
+  }
+  .back-link:disabled{opacity:0; pointer-events:none;}
+
+  /* ---------- RESULT ---------- */
+  #screen-result{padding:30px 0 40px;}
+  .result-eyebrow{text-align:center; margin-bottom:6px;}
+  #screen-result h2.headline{
+    font-size:29px; text-align:center; margin:0 0 6px; line-height:1.28;
+  }
+  .result-sub{text-align:center; color:var(--ink-soft); font-size:18px; margin-bottom:24px;}
+
+  .tie-note{
+    text-align:center; font-size:16px; color:var(--burgundy-deep); background:var(--cream-alt);
+    padding:12px 18px; margin-bottom:26px; border-left:3px solid var(--gold);
+  }
+
+  .bars-caption{text-align:center; font-size:15px; font-style:italic; color:var(--ink-soft); margin-bottom:16px;}
+
+  .bars{
+    background:var(--paper); border:1px solid var(--line); padding:26px 22px 20px;
+    margin-bottom:30px;
+  }
+  .bars-title{font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); font-weight:600; margin-bottom:18px; text-align:center;}
+  .bar-row{margin-bottom:16px;}
+  .bar-row:last-child{margin-bottom:0;}
+  .bar-top{display:flex; justify-content:space-between; font-size:15px; margin-bottom:5px; color:var(--ink-soft);}
+  .bar-top b{color:var(--ink); font-weight:600;}
+  .bar-top .score{font-family:'Playfair Display', serif; color:var(--burgundy); font-weight:600;}
+  .bar-track{height:8px; background:var(--cream-alt); border-radius:4px; overflow:hidden; position:relative;}
+  .bar-fill{height:100%; border-radius:4px; background:var(--gold-light); width:0%; transition:width 1s ease;}
+  .bar-row.lowest .bar-fill{background:var(--burgundy);}
+  .bar-row.lowest .bar-top b{color:var(--burgundy);}
+
+  .result-card{
+    background:var(--burgundy-deep); color:var(--cream);
+    padding:30px 24px; margin-bottom:20px;
+  }
+  .result-card .kicker{color:var(--gold-light); font-size:13px; letter-spacing:.14em; text-transform:uppercase; font-weight:600; margin-bottom:10px;}
+  .result-card h3{color:var(--cream); font-size:23px; margin-bottom:14px; line-height:1.3;}
+  .result-card p{margin:0 0 14px; font-size:18px; color:var(--cream-alt); line-height:1.6;}
+  .result-card ul{margin:0 0 14px; padding-left:20px; color:var(--cream-alt); font-size:17px; line-height:1.6;}
+  .result-card li{margin-bottom:6px;}
+  .result-card .not-now{
+    border-top:1px solid rgba(247,241,230,0.18); margin-top:16px; padding-top:16px;
+    font-size:16px; color:var(--gold-light);
+  }
+  .result-card .not-now b{color:var(--cream);}
+
+  .disclaimer{font-size:14px; color:var(--ink-soft); text-align:center; margin:10px 0 30px; padding:0 10px;}
+
+  /* ---------- PRACTICE ---------- */
+  #screen-practice{padding:30px 0 40px;}
+  .practice-head{text-align:center; margin-bottom:24px;}
+  .practice-head .eyebrow{display:block; margin-bottom:8px;}
+  .practice-head h2{font-size:27px; line-height:1.3;}
+  .practice-sub{text-align:center; color:var(--ink-soft); font-size:17px; margin-bottom:26px;}
+
+  .tabs{display:flex; gap:8px; margin-bottom:26px;}
+  .tab{
+    flex:1; text-align:center; padding:11px 8px; border:1px solid var(--line); background:var(--paper);
+    font-size:14px; color:var(--ink-soft); cursor:pointer; border-radius:2px; transition:all .18s ease;
+  }
+  .tab.active{border-color:var(--burgundy); background:var(--burgundy); color:var(--cream);}
+
+  .practice-title{font-family:'Playfair Display', serif; font-size:23px; color:var(--burgundy-deep); margin-bottom:8px; line-height:1.3;}
+  .practice-intro{font-size:16px; color:var(--ink-soft); margin-bottom:26px;}
+
+  .step{margin-bottom:26px;}
+  .step-head{display:flex; align-items:center; gap:10px; margin-bottom:8px;}
+  .step-num{width:26px;height:26px;border-radius:50%;background:var(--burgundy);color:var(--cream);font-family:'Playfair Display',serif;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .step-label{font-size:15px;letter-spacing:.03em;color:var(--burgundy-deep);font-weight:600;}
+  .step-desc{font-size:16px;color:var(--ink-soft); margin:0 0 12px 36px; line-height:1.5;}
+  .field-list{display:flex; flex-direction:column; gap:10px; margin:0 0 4px 36px;}
+  .field-list input[type=text], .field-list textarea{
+    font-family:'Cormorant Garamond', serif; font-size:17px;
+    border:1px solid var(--line); background:var(--paper);
+    padding:11px 14px; border-radius:2px; color:var(--ink); width:100%;
+  }
+  .field-list textarea{min-height:52px; resize:vertical; font-size:16px;}
+  .field-list input[type=text]:focus, .field-list textarea:focus{outline:none; border-color:var(--gold);}
+
+  .formula-box{
+    background:var(--paper); border:1px solid var(--line); padding:18px 18px 14px; margin:0 0 18px 36px;
+    font-family:'Playfair Display', serif; font-size:17px; line-height:2; color:var(--burgundy-deep);
+  }
+  .blank{
+    font-family:'Cormorant Garamond', serif; font-size:16px; font-style:italic;
+    border:none; border-bottom:1.5px dotted var(--gold);
+    background:transparent; color:var(--burgundy); padding:2px 6px;
+    min-width:110px; outline:none;
+  }
+  .blank:focus{border-bottom-color:var(--burgundy); border-bottom-style:solid;}
+  .blank::placeholder{color:#B7A990; font-style:italic;}
+
+  .choice-list{display:flex; flex-direction:column; gap:8px; margin:0 0 4px 36px;}
+  .choice{
+    display:flex; align-items:center; gap:12px;
+    border:1px solid var(--line); background:var(--paper);
+    padding:11px 14px; border-radius:2px; cursor:pointer; font-size:16px; color:var(--ink);
+    transition:all .18s ease;
+  }
+  .choice:hover{border-color:var(--gold);}
+  .choice.selected{border-color:var(--burgundy); background:var(--cream-alt);}
+  .choice .radio{
+    width:16px;height:16px;border-radius:50%;border:1px solid var(--gold); flex-shrink:0; position:relative;
+  }
+  .choice.selected .radio{border-color:var(--burgundy);}
+  .choice.selected .radio::after{
+    content:""; position:absolute; inset:3px; border-radius:50%; background:var(--burgundy);
+  }
+
+  .static-note{font-size:15px; color:var(--ink-soft); margin:0 0 4px 36px; line-height:1.55;}
+  .practice-result{
+    margin:8px 0 22px; padding:16px 18px; background:var(--cream-alt); border-left:3px solid var(--gold);
+    font-size:16px; color:var(--ink-soft);
+  }
+  .practice-result b{color:var(--burgundy);}
+
+  .copy-row{display:flex; align-items:center; gap:14px; margin:6px 0 30px;}
+  .copy-confirm{font-size:14px; color:var(--gold); opacity:0; transition:opacity .3s ease;}
+  .copy-confirm.show{opacity:1;}
+
+  /* ---------- TRANSITION / REFLECT / CTA ---------- */
+  #screen-transition{padding:30px 0 60px;}
+  .reflect-head{text-align:center; margin-bottom:22px;}
+  .reflect-head h2{font-size:25px; line-height:1.32;}
+  .reflect-list{display:flex; flex-direction:column; gap:10px; margin-bottom:6px;}
+
+  .bridge{
+    background:var(--cream-alt); border-left:3px solid var(--burgundy); padding:16px 18px; margin:24px 0 6px;
+    font-size:17px; color:var(--ink); display:none;
+  }
+  .bridge.show{display:block; animation:fadeIn .4s ease;}
+  .hidden-block{display:none;}
+  .hidden-block.show{display:block; animation:fadeIn .5s ease;}
+
+  .cta{
+    background:var(--paper); border:1px solid var(--gold); padding:32px 26px; margin-top:26px;
+    position:relative;
+  }
+  .cta::before{
+    content:"";
+    position:absolute; top:8px; left:8px; right:8px; bottom:8px;
+    border:1px solid var(--line);
+    pointer-events:none;
+  }
+  .cta-inner{position:relative;}
+  .cta-eyebrow{text-align:center; font-size:13px; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); font-weight:600; margin-bottom:10px;}
+  .cta h3{font-size:26px; text-align:center; margin-bottom:16px; line-height:1.28;}
+  .cta p{font-size:17px; color:var(--ink-soft); line-height:1.6; margin:0 0 14px;}
+  .cta .list-intro{color:var(--ink); font-weight:600; margin-bottom:8px;}
+  .cta ul{margin:0 0 18px; padding-left:20px; font-size:17px; color:var(--ink); line-height:1.6;}
+  .cta li{margin-bottom:5px;}
+
+  .cta-meta{font-size:16px; color:var(--ink-soft); text-align:center; margin-bottom:6px;}
+  .price-row{text-align:center; margin-bottom:22px;}
+  .price-row .price{font-family:'Playfair Display', serif; font-size:32px; color:var(--burgundy); font-weight:700;}
+
+  .cta-note{text-align:center; font-size:14px; color:var(--ink-soft); margin-top:14px;}
+  .cta-note a{color:var(--burgundy);}
+
+  .restart-wrap{text-align:center; margin-top:36px;}
+  .restart-wrap button{background:none; border:none; font-family:'Cormorant Garamond', serif; font-size:15px; color:var(--ink-soft); text-decoration:underline; cursor:pointer;}
+
+  footer.sig{text-align:center; margin-top:30px; padding-bottom:10px;}
+  footer.sig .name{font-family:'Playfair Display', serif; font-size:15px; letter-spacing:.06em; color:var(--burgundy);}
+  footer.sig .role{font-size:14px; color:var(--ink-soft); margin-top:2px;}
+
+  @media (max-width:480px){
+    body{font-size:18px;}
+    #screen-cover h1{font-size:31px;}
+    .q-text{font-size:23px; min-height:auto;}
+    .cta h3{font-size:22px;}
+    .step-desc, .field-list, .formula-box, .choice-list, .static-note{margin-left:0;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ================= COVER ================= -->
+  <section id="screen-cover" class="screen active">
+    <div class="cover-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#B8923E" stroke-width="1.3"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M8 10.5c0-1.4 1.6-2.5 4-2.5s4 1.1 4 2.5-1.6 2-4 2.5-4 1.1-4 2.5 1.6 2.5 4 2.5 4-1.1 4-2.5"/></svg>
+    </div>
+    <div class="eyebrow">Практическая диагностика</div>
+    <h1>Где находится<br>твоя точка роста<br>в доходе</h1>
+    <p class="lede">Пять направлений, которые показывают, за счёт чего ты можешь начать зарабатывать больше — без «работать ещё больше». Плюс практика на 15 минут под твой результат.</p>
+
+    <div class="cover-points">
+      <div><span class="n">01</span><span>25 утверждений — оцени, как происходит у тебя на самом деле, а не как «должно быть»</span></div>
+      <div><span class="n">02</span><span>Пять направлений: ценность, стоимость, проявленность, способы заработка, система</span></div>
+      <div><span class="n">03</span><span>Готовая практика под твою точку роста — не просто совет, а рабочий черновик</span></div>
+    </div>
+
+    <div class="meta-row"><span><b>5–7 мин</b> · время</span><span><b>25</b> вопросов</span><span><b>5</b> направлений</span></div>
+
+    <button class="btn btn-block" onclick="startQuiz()">Пройти диагностику</button>
+  </section>
+
+  <!-- ================= QUIZ ================= -->
+  <section id="screen-quiz" class="screen">
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-label"><span>Вопрос <b id="qIndex">1</b> из 25</span><span id="sectionLabel">Ценность и навыки</span></div>
+    </div>
+
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="qOptions"></div>
+
+    <div class="nav-row">
+      <button class="back-link" id="backBtn" onclick="goBack()">← назад</button>
+    </div>
+  </section>
+
+  <!-- ================= RESULT ================= -->
+  <section id="screen-result" class="screen">
+    <div class="result-eyebrow eyebrow" style="text-align:center;">Результат диагностики</div>
+    <h2 class="headline" id="resultHeadline"></h2>
+    <p class="result-sub">Не приговор и не диагноз. Направление, которое стоит проверить первым.</p>
+
+    <div id="tieNoteWrap"></div>
+
+    <p class="bars-caption">Чем ниже балл, тем больше потенциал роста в этом направлении.</p>
+    <div class="bars">
+      <div class="bars-title">Баллы по пяти направлениям</div>
+      <div id="barsWrap"></div>
+    </div>
+
+    <div id="resultCardsWrap"></div>
+
+    <p class="disclaimer">Это общий ориентир. Он показывает направление для проверки, но не учитывает твою профессию, ситуацию, сильные стороны, ограничения и личный денежный сценарий.</p>
+
+    <button class="btn btn-block" onclick="goToPractice()">Сделать практику на 15 минут →</button>
+  </section>
+
+  <!-- ================= PRACTICE ================= -->
+  <section id="screen-practice" class="screen">
+    <div class="practice-head">
+      <span class="eyebrow">Твой денежный шаг на ближайшие 15 минут</span>
+      <h2 id="practiceHeading">Практика</h2>
+    </div>
+    <p class="practice-sub" id="practiceSub"></p>
+
+    <div id="tabsWrap"></div>
+    <div id="practiceContent"></div>
+
+    <button class="btn btn-block" onclick="goToTransition()">Готово, дальше →</button>
+  </section>
+
+  <!-- ================= TRANSITION: REFLECT + CTA ================= -->
+  <section id="screen-transition" class="screen">
+    <div class="reflect-head">
+      <div class="eyebrow" style="margin-bottom:8px;">Один вопрос напоследок</div>
+      <h2>Что ты заметила, пока выполняла задание?</h2>
+    </div>
+    <div class="reflect-list" id="reflectList"></div>
+
+    <div class="bridge" id="bridgeText"></div>
+
+    <div class="hidden-block" id="ctaWrap">
+      <div class="cta">
+        <div class="cta-inner">
+          <div class="cta-eyebrow">Мини-разбор по натальной карте</div>
+          <h3>Как увеличивать доход</h3>
+          <p>Ты сделала первый шаг. Но тест не может определить, какой путь увеличения дохода подходит именно тебе.</p>
+          <p>Общие действия помогают проверить гипотезу. Но они не учитывают твои сильные денежные качества, способ проявления, подходящий формат работы и личный сценарий отношений с деньгами.</p>
+          <p class="list-intro">В мини-разборе по натальной карте «Как увеличивать доход» я посмотрю:</p>
+          <ul>
+            <li>через какие качества тебе легче создавать доход;</li>
+            <li>какой навык или формат работы стоит усилить;</li>
+            <li>где ты можешь недооценивать свою ценность;</li>
+            <li>на чём лучше сосредоточиться сейчас;</li>
+            <li>какие 1–3 действия подойдут именно твоей ситуации.</li>
+          </ul>
+          <p class="cta-meta">Голосовой разбор 20–30 минут + мини-PDF.</p>
+          <div class="price-row"><span class="price">1 888 ₽</span></div>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <a class="btn btn-block" id="tgBtn" href="#" target="_blank" rel="noopener">Получить личный разбор в Telegram</a>
+            <a class="btn btn-outline btn-block" id="vkBtn" href="#" target="_blank" rel="noopener">Получить личный разбор во ВКонтакте</a>
+          </div>
+          <p class="cta-note">Напиши слово «ДОХОД» и пришли результат диагностики — он уже скопирован в буфер, просто вставь.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="restart-wrap">
+      <button onclick="restartQuiz()">Пройти диагностику заново</button>
+    </div>
+
+    <footer class="sig">
+      <div class="name">Евгения Вакорина</div>
+      <div class="role">астропсихолог и таролог</div>
+    </footer>
+  </section>
+
+</div>
+
+<script>
+/* ============ QUIZ DATA ============ */
+const SECTIONS = [
+  {
+    key:'value', title:'Ценность и навыки',
+    questions:[
+      'Я могу назвать не менее трёх задач, которые решаю особенно хорошо.',
+      'Я понимаю, какой результат получают благодаря моей работе другие люди или компания.',
+      'Мои самые сильные навыки используются в текущей работе, услугах или продуктах.',
+      'У меня есть примеры, отзывы, цифры или другие подтверждения моих результатов.',
+      'Я вижу, какой навык могу развить или упаковать, чтобы получать больше.'
+    ],
+    result:{
+      title:'Ценность и навыки',
+      headline:'Твои знания пока не полностью превращены в деньги',
+      body:'У тебя может быть больше навыков и опыта, чем сейчас отражено в работе и доходе. Возможно, ты привыкла считать часть своих способностей «обычными» и не замечаешь, какую ценность они дают другим людям.',
+      signs:[
+        'много учишься, но не понимаешь, как применить знания на практике',
+        'выполняешь сложные задачи, но описываешь свою работу слишком общо',
+        'часто помогаешь другим бесплатно, потому что не считаешь это отдельным навыком',
+        'берёшься за всё подряд и не можешь назвать свою сильную специализацию',
+        'не собираешь отзывы, результаты и примеры своей работы'
+      ],
+      growth:'Выбери один навык, который уже даёт людям заметный результат. Опиши: какую задачу он решает, кому нужен и в каком формате за него могут платить.',
+      notNow:'Не покупай ещё одно обучение только потому, что пока не чувствуешь себя готовой. Сначала проверь, какие знания у тебя уже есть и какие пока не использованы.'
+    }
+  },
+  {
+    key:'price', title:'Стоимость работы',
+    questions:[
+      'Я знаю примерную стоимость похожей работы, услуг или специалистов на рынке.',
+      'Моя оплата учитывает опыт, сложность задач, ответственность и реальный объём работы.',
+      'Я могу спокойно назвать стоимость или обсудить повышение дохода.',
+      'Я не добавляю бесконечные задачи бесплатно из страха показаться неудобной.',
+      'Я регулярно пересматриваю цены, условия работы или варианты профессионального роста.'
+    ],
+    result:{
+      title:'Стоимость работы',
+      headline:'Точка роста может быть в стоимости работы',
+      body:'Возможно, тебе не нужно увеличивать количество задач. Сначала стоит проверить, соответствует ли оплата тому уровню пользы, опыта, ответственности и нагрузки, которые ты уже даёшь.',
+      signs:[
+        'тебе проще сделать больше, чем попросить больше',
+        'цена или зарплата давно не менялись, хотя опыт и обязанности выросли',
+        'ты автоматически делаешь скидку ещё до реакции другого человека',
+        'берёшь дополнительные задачи без пересмотра условий',
+        'боишься, что после разговора о деньгах тебя сочтут жадной или заменят'
+      ],
+      growth:'Собери факты: какие результаты ты даёшь, что стало сложнее, какие обязанности добавились, сколько стоит похожая работа. Затем выбери один способ проверить новую стоимость.',
+      notNow:'Не повышай цену случайно и не ставь сумму только из желания «выйти на новый уровень». Новая стоимость должна опираться на результат и рынок.'
+    }
+  },
+  {
+    key:'visibility', title:'Проявленность',
+    questions:[
+      'Люди вокруг понимают, чем я занимаюсь и в чём моя сильная сторона.',
+      'Я регулярно рассказываю о работе, результатах, услугах или профессиональных интересах.',
+      'Я умею сделать конкретное предложение, а не только публиковать полезный контент.',
+      'Я сама откликаюсь на возможности, предлагаю идеи и начинаю разговоры о сотрудничестве.',
+      'У меня есть хотя бы один понятный канал, через который приходят клиенты, предложения или вакансии.'
+    ],
+    result:{
+      title:'Проявленность',
+      headline:'Точка роста может быть в проявленности',
+      body:'У тебя могут быть сильные навыки и хороший результат, но деньги не приходят автоматически только потому, что ты делаешь работу качественно. Нужны люди, которые понимают, чем ты занимаешься и как к тебе обратиться.',
+      signs:[
+        'ждёшь, что тебя заметят и сами предложат подходящую возможность',
+        'публикуешь полезный контент, но редко говоришь о своих услугах или результатах',
+        'сложно коротко объяснить, чем ты можешь быть полезна',
+        'почти не рассказываешь окружению, что ищешь клиентов, проект или новую работу',
+        'боишься повторять предложение, потому что кажется, что все уже его видели'
+      ],
+      growth:'Сформулируй одно конкретное предложение и покажи его там, где уже есть подходящие люди. Пост, сообщение бывшему клиенту, разговор с руководителем, отклик на вакансию.',
+      notNow:'Не пытайся быть сразу во всех соцсетях и не создавай контент ради ощущения занятости. Выбери один канал и одно предложение, которое можно проверить в реальности.'
+    }
+  },
+  {
+    key:'model', title:'Способы заработка',
+    questions:[
+      'Я понимаю, может ли мой текущий источник дохода привести меня к желаемой сумме.',
+      'Я вижу не менее трёх реалистичных способов увеличить доход в своей ситуации.',
+      'Мой доход не зависит полностью от одного клиента, человека или случайного проекта.',
+      'Я периодически проверяю новые варианты: повышение, смену работы, новую услугу, продукт или партнёрство.',
+      'Я выбираю новые направления с учётом времени и сил, а не пытаюсь одновременно делать всё.'
+    ],
+    result:{
+      title:'Способы заработка',
+      headline:'Тебе может подойти новый способ увеличения дохода',
+      body:'Возможно, текущий источник дохода уже близок к своему потолку. Тогда попытка сильнее стараться внутри прежней модели будет приносить усталость быстрее, чем деньги.',
+      signs:[
+        'желаемую сумму невозможно получить при текущей оплате и количестве рабочих часов',
+        'доход слишком сильно зависит от одного работодателя, клиента или сезона',
+        'ты давно переросла часть задач, но продолжаешь делать только их',
+        'есть идеи новых услуг или проектов, но ты не проверяешь спрос',
+        'либо держишься за единственный привычный вариант, либо хватаешься сразу за пять новых'
+      ],
+      growth:'Составь три пути: усилить существующее, добавить близкое направление или изменить модель. Выбери один короткий эксперимент без больших вложений.',
+      notNow:'Не запускай несколько новых направлений одновременно и не увольняйся только из-за вдохновения. Сначала проверь спрос, условия, нагрузку и устойчивость перехода.'
+    }
+  },
+  {
+    key:'system', title:'Система действий',
+    questions:[
+      'Я знаю, какие мои действия чаще всего приводят к деньгам или новым возможностям.',
+      'Каждую неделю я выделяю время на действия, связанные с ростом дохода.',
+      'Я отслеживаю не только занятость, но и предложения, переговоры, отклики и продажи.',
+      'Я довожу денежные задачи до результата, а не постоянно переключаюсь на новые идеи.',
+      'Мой план учитывает отдых и реальную нагрузку, поэтому я могу выполнять его регулярно.'
+    ],
+    result:{
+      title:'Система действий',
+      headline:'Твоей точкой роста может быть денежная система',
+      body:'Возможно, ты действительно много работаешь, но твои действия не связаны в повторяемый путь к деньгам. Поэтому доход зависит от редких рывков, случайных обращений и периодов высокой энергии.',
+      signs:[
+        'каждую неделю начинаешь новые задачи, но редко доводишь денежные процессы до конца',
+        'занята почти постоянно, хотя предложений, переговоров и продаж мало',
+        'активно проявляешься только тогда, когда деньги уже срочно нужны',
+        'не отслеживаешь, какие действия приводят клиентов, проекты или повышение',
+        'планируешь больше, чем можешь выполнить без истощения'
+      ],
+      growth:'Выбери два действия, которые напрямую связаны с деньгами, и повторяй их каждую неделю в течение месяца.',
+      notNow:'Не строй сложную систему из десятков таблиц и ежедневных публикаций. Она должна быть настолько простой, чтобы работать и в обычную неделю.'
+    }
+  }
+];
+
+const ANSWER_OPTS = [
+  {v:0, l:'Нет', s:'Я этого не делаю или не понимаю, как это работает'},
+  {v:1, l:'Иногда', s:'Были отдельные попытки, но устойчивого результата нет'},
+  {v:2, l:'Скорее да', s:'Это работает, но не всегда и не в полной мере'},
+  {v:3, l:'Да', s:'Я делаю это регулярно и вижу понятный результат'}
+];
+
+const FLAT = [];
+SECTIONS.forEach((sec, si)=>{
+  sec.questions.forEach((q, qi)=>{
+    FLAT.push({sectionIndex:si, qIndexInSection:qi, text:q});
+  });
+});
+
+let current = 0;
+let answers = new Array(FLAT.length).fill(null);
+let lowestIndices = [];
+let activePracticeIdx = 0;
+
+/* ============ QUIZ FLOW ============ */
+function startQuiz(){
+  show('screen-quiz');
+  current = 0;
+  renderQuestion();
+}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function renderQuestion(){
+  const item = FLAT[current];
+  const sec = SECTIONS[item.sectionIndex];
+  document.getElementById('qIndex').textContent = current+1;
+  document.getElementById('sectionLabel').textContent = sec.title;
+  document.getElementById('progressFill').style.width = ((current)/FLAT.length*100)+'%';
+  document.getElementById('qText').textContent = item.text;
+
+  const wrap = document.getElementById('qOptions');
+  wrap.innerHTML = '';
+  ANSWER_OPTS.forEach(opt=>{
+    const el = document.createElement('div');
+    el.className = 'option' + (answers[current]===opt.v ? ' selected' : '');
+    el.innerHTML = `<div class="dot"></div><div><span class="label">${opt.l}</span><span class="sub">${opt.s}</span></div>`;
+    el.onclick = ()=>selectAnswer(opt.v);
+    wrap.appendChild(el);
+  });
+
+  document.getElementById('backBtn').disabled = current===0;
+}
+
+function selectAnswer(v){
+  answers[current] = v;
+  renderQuestion();
+  setTimeout(()=>{
+    if(current < FLAT.length-1){
+      current++;
+      renderQuestion();
+    } else {
+      finishQuiz();
+    }
+  }, 260);
+}
+
+function goBack(){
+  if(current>0){
+    current--;
+    renderQuestion();
+  }
+}
+
+function finishQuiz(){
+  document.getElementById('progressFill').style.width = '100%';
+  const scores = SECTIONS.map((sec, si)=>{
+    let sum = 0;
+    FLAT.forEach((item, idx)=>{
+      if(item.sectionIndex===si) sum += (answers[idx]||0);
+    });
+    return sum;
+  });
+
+  const minScore = Math.min(...scores);
+  lowestIndices = scores.map((s,i)=>s===minScore ? i : -1).filter(i=>i!==-1);
+  activePracticeIdx = 0;
+
+  renderResult(scores, lowestIndices);
+  show('screen-result');
+}
+
+/* ============ RESULT SCREEN ============ */
+function renderResult(scores, lowIdx){
+  const titles = lowIdx.map(i=>SECTIONS[i].title);
+  document.getElementById('resultHeadline').innerHTML =
+    'Твоя точка роста —<br><span style="color:var(--burgundy);">' + titles.join(' и ') + '</span>';
+
+  const tieWrap = document.getElementById('tieNoteWrap');
+  tieWrap.innerHTML = '';
+  if(lowIdx.length > 1){
+    const note = document.createElement('div');
+    note.className = 'tie-note';
+    note.textContent = 'У тебя два направления получили одинаково низкий балл. Не спеши выбирать самое болезненное — смотри ниже на оба, а практику ниже можно сделать по любому из них.';
+    tieWrap.appendChild(note);
+  }
+
+  const barsWrap = document.getElementById('barsWrap');
+  barsWrap.innerHTML = '';
+  SECTIONS.forEach((sec, i)=>{
+    const pct = Math.round(scores[i]/15*100);
+    const row = document.createElement('div');
+    row.className = 'bar-row' + (lowIdx.includes(i) ? ' lowest' : '');
+    row.innerHTML = `
+      <div class="bar-top"><b>${sec.title}</b><span class="score">${scores[i]} / 15</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:0%" data-pct="${pct}"></div></div>
+    `;
+    barsWrap.appendChild(row);
+  });
+  setTimeout(()=>{
+    document.querySelectorAll('.bar-fill').forEach(f=>{
+      f.style.width = f.getAttribute('data-pct')+'%';
+    });
+  }, 80);
+
+  const cardsWrap = document.getElementById('resultCardsWrap');
+  cardsWrap.innerHTML = '';
+  lowIdx.forEach(i=>{
+    const r = SECTIONS[i].result;
+    const card = document.createElement('div');
+    card.className = 'result-card';
+    card.innerHTML = `
+      <div class="kicker">Направление: ${r.title} — ${scores[i]} из 15</div>
+      <h3>${r.headline}</h3>
+      <p>${r.body}</p>
+      <p style="color:var(--gold-light); font-weight:600; margin-bottom:8px;">Ты можешь узнавать себя в этом, если:</p>
+      <ul>${r.signs.map(s=>`<li>${s}</li>`).join('')}</ul>
+      <p style="color:var(--gold-light); font-weight:600; margin-bottom:8px;">Твоя возможная точка роста:</p>
+      <p>${r.growth}</p>
+      <div class="not-now"><b>Чего сейчас не стоит делать:</b> ${r.notNow}</div>
+    `;
+    cardsWrap.appendChild(card);
+  });
+}
+
+/* ============ PRACTICE DATA ============ */
+const PRACTICE = {
+  value: {
+    title:'Найди навык, за который тебе уже могут платить',
+    intro:'Не думай обо всём, что ты умеешь. Возьми только последние 6–12 месяцев.',
+    html:`
+      <div class="step">
+        <div class="step-head"><div class="step-num">1</div><div class="step-label">Три ситуации</div></div>
+        <div class="step-desc">Запиши три ситуации, в которых люди просили тебя помочь, благодарили за результат, говорили, что у тебя что-то хорошо получается, или обращались повторно.</div>
+        <div class="field-list">
+          <input type="text" id="v_sit1" placeholder="Ситуация 1">
+          <input type="text" id="v_sit2" placeholder="Ситуация 2">
+          <input type="text" id="v_sit3" placeholder="Ситуация 3">
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-head"><div class="step-num">2</div><div class="step-label">Что получает человек</div></div>
+        <div class="step-desc">Не «я провела консультацию», а «человек понял, какое решение принять». Ответь одной фразой.</div>
+        <div class="field-list">
+          <input type="text" id="v_benefit" placeholder="Что человек получает благодаря мне">
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-head"><div class="step-num">3</div><div class="step-label">Собери формулу</div></div>
+        <div class="formula-box">
+          Я помогаю <input class="blank" id="v_aud" placeholder="кому"> получить <input class="blank" id="v_res" placeholder="что получить"> благодаря тому, что умею <input class="blank" id="v_skill" placeholder="что я умею">.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-head"><div class="step-num">4</div><div class="step-label">Выбери один способ проверить ценность навыка</div></div>
+        <div class="choice-list" id="choices_value">
+          <div class="choice" onclick="selectChoice(this)" data-value="рассказать о нём в посте"><div class="radio"></div>рассказать о нём в посте</div>
+          <div class="choice" onclick="selectChoice(this)" data-value="предложить помощь потенциальному клиенту"><div class="radio"></div>предложить помощь потенциальному клиенту</div>
+          <div class="choice" onclick="selectChoice(this)" data-value="добавить его в описание услуги"><div class="radio"></div>добавить его в описание услуги</div>
+          <div class="choice" onclick="selectChoice(this)" data-value="попросить отзыв у человека, которому ты уже помогла"><div class="radio"></div>попросить отзыв у человека, которому ты уже помогла</div>
+        </div>
+      </div>
+      <div class="practice-result"><b>Твой результат:</b> черновик навыка, который можно начать переводить в деньги.</div>
+      <div class="copy-row">
+        <button class="btn btn-outline" onclick="copyPractice('value')">Скопировать формулу ценности</button>
+        <span class="copy-confirm" id="confirm_value">Скопировано</span>
+      </div>
+    `,
+    build:()=>{
+      const g = id => (document.getElementById(id)||{}).value || '…';
+      const choice = (document.querySelector('#choices_value .choice.selected')||{}).dataset ? document.querySelector('#choices_value .choice.selected').dataset.value : '…';
+      return `МОЯ ДЕНЕЖНАЯ ЦЕННОСТЬ\n\nЯ помогаю ${g('v_aud')} получить ${g('v_res')} благодаря тому, что умею ${g('v_skill')}.\nЧто получает человек: ${g('v_benefit')}\nСитуации, где это уже сработало: ${g('v_sit1')}; ${g('v_sit2')}; ${g('v_sit3')}\nКак проверю: ${choice}`;
+    }
+  },
+  price: {
+    title:'Проверь, не выросла ли твоя работа из старой цены',
+    intro:'Это не призыв резко поднимать цену. Задача — проверить, соответствует ли текущая оплата тому, что ты уже делаешь.',
+    html:`
+      <div class="step">
+        <div class="step-head"><div class="step-num">1</div><div class="step-label">Текущая стоимость</div></div>
+        <div class="field-list">
+          <input type="text" id="p_current" placeholder="Твоя текущая стоимость услуги или размер оплаты">
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-head"><div class="step-num">2</div><div class="step-label">Что изменилось за год</div></div>
+        <div class="field-list">
+          <textarea id="p_skills" placeholder="Какие новые навыки появились у меня за последний год?"></textarea>
+          <textarea id="p_tasks" placeholder="Какие задачи и ответственность добавились?"></textarea>
+          <textarea id="p_result" placeholder="Какой результат я сейчас даю лучше или быстрее, чем раньше?"></textarea>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-head"><div class="step-num">3</div><div class="step-label">Сверься с рынком</div></div>
+        <div class="step-desc">Посмотри стоимость трёх похожих услуг или уровень оплаты аналогичных специалистов — прямо сейчас, в двух вкладках.</div>
+      </div>
+      <div class="step">
+        <div class="step-head"><div class="step-num">4</div><div class="step-label">Собери формулу</div></div>
+        <div class="formula-box">
+          Сейчас моя работа стоит <input class="blank" id="p_current2" placeholder="сумма">. За это клиент или работодатель получает <input class="blank" id="p_gives" placeholder="что получает">. С учётом моего опыта и объёма работы я хочу проверить стоимость <input class="blank" id="p_check" placeholder="новая сумма">.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-head"><div class="step-num">5</div><div class="step-label">Выбери одно действие</div></div>
+        <div class="choice-list" id="choices_price">
+          <div class="choice" onclick="selectChoice(this)" data-value="назвать новую цену следующему клиенту"><div class="radio"></div>назвать новую цену следующему клиенту</div>
+          <div class="choice" onclick="selectChoice(this)" data-value="пересчитать стоимость одной услуги"><div class="radio"></div>пересчитать стоимость одной услуги</div>
+          <div class="choice" onclick="selectChoice(this)" data-value="убрать лишнюю бесплатную задачу"><div class="radio"></div>убрать лишнюю бесплатную задачу</div>
+          <div class="choice" onclick="selectChoice(this)" data-value="подготовиться к разговору о повышении оплаты"><div class="radio"></div>подготовиться к разговору о повышении оплаты</div>
+        </div>
+      </div>
+      <div class="practice-result"><b>Твой результат:</b> ясная картина, соответствует ли текущая оплата твоей реальной ценности.</div>
+      <div class="copy-row">
+        <button class="btn btn-outline" onclick="copyPractice('price')">Сохранить расчёт стоимости</button>
+        <span class="copy-confirm" id="confirm_price">Скопировано</span>
+      </div>
+    `,
+    build:()=>{
+      const g = id => (document.getElementById(id)||{}).value || '…';
+      const choice = (document.querySelector('#choices_price .choice.selected')||{}).dataset ? document.querySelector('#choices_price .choice.selected').dataset.value : '…';
+      return `ПРОВЕРКА СТОИМОСТИ\n\nТекущая стоимость: ${g('p_current')}\nСейчас моя работа стоит ${g('p_current2')}. За это клиент получает ${g('p_gives')}. Хочу проверить стоимость ${g('p_check')}.\nЧто добавилось за год — навыки: ${g('p_skills')}; задачи/ответственность: ${g('p_tasks')}; результат: ${g('p_result')}\nСледующий шаг: ${choice}`;
+    }
+  },
+  visibility: {
+    title:'Составь одно предложение, которое можно опубликовать сегодня',
+    intro:'Не нужно создавать контент-план или заводить ещё одну социальную сеть.',
+    html:`
+      <div class="step">
+        <div class="step-head"><div class="step-num">1</div><div class="step-label">Собери предложение по четырём строкам</div></div>
+        <div class="formula-box" style="line-height:2.3;">
+          Я помогаю <input class="blank" id="vi_1" placeholder="кому / с чем"><br>
+          Решить или понять <input class="blank" id="vi_2" placeholder="что именно"><br>
+          С помощью <input class="blank" id="vi_3" placeholder="твой метод / инструмент"><br>
+          Сейчас ко мне можно обратиться за <input class="blank" id="vi_4" placeholder="конкретный продукт">
+        </div>
+        <div class="static-note" style="font-style:italic;">Пример: «Я помогаю женщинам понять, почему не получается увеличивать доход. Через натальную карту мы находим сильные денежные качества и подходящие способы заработка. Сейчас можно записаться на мини-разбор «Как увеличивать доход».</div>
+      </div>
+      <div class="step">
+        <div class="step-head"><div class="step-num">2</div><div class="step-label">Проверь и опубликуй</div></div>
+        <div class="step-desc">Убери сложные термины. Проверь, понятно ли, кому и с чем ты помогаешь. Опубликуй текст или отправь его одному человеку, которому предложение может быть полезно.</div>
+      </div>
+      <div class="practice-result"><b>Твой результат:</b> готовое предложение, которое можно использовать сразу.</div>
+      <div class="copy-row">
+        <button class="btn btn-outline" onclick="copyPractice('visibility')">Скопировать моё предложение</button>
+        <span class="copy-confirm" id="confirm_visibility">Скопировано</span>
+      </div>
+    `,
+    build:()=>{
+      const g = id => (document.getElementById(id)||{}).value || '…';
+      return `МОЁ ПРЕДЛОЖЕНИЕ\n\nЯ помогаю ${g('vi_1')}. Решить или понять ${g('vi_2')}. С помощью ${g('vi_3')}. Сейчас ко мне можно обратиться за ${g('vi_4')}.`;
+    }
+  },
+  model: {
+    title:'Найди три возможных пути роста',
+    intro:'Не спеши добавлять ещё одну работу — сначала проверь, можно ли получить больше из того, что уже есть.',
+    html:`
+      <div class="step">
+        <div class="step-head"><div class="step-num">1</div><div class="step-label">Три пути</div></div>
+        <div class="field-list">
+          <input type="text" id="m_row1" placeholder="Усилить существующее: что можно поднять / изменить">
+          <input type="text" id="m_row2" placeholder="Добавить близкое направление: новая услуга, формат, партнёрство">
+          <input type="text" id="m_row3" placeholder="Изменить модель: другая работа, продукт, подписка, новый источник">
+        </div>
+        <div class="static-note">Для каждого пути прикинь: как быстро его можно проверить, сколько денег и сил он потребует, есть ли уже люди, которым это нужно.</div>
+      </div>
+      <div class="step">
+        <div class="step-head"><div class="step-num">2</div><div class="step-label">Выбери один эксперимент</div></div>
+        <div class="step-desc">Не самый красивый вариант, а тот, который можно проверить с наименьшими затратами.</div>
+        <div class="formula-box">
+          В ближайшие семь дней я проверю <input class="blank" id="m_check" placeholder="что"><br>
+          Для этого я сделаю <input class="blank" id="m_action" placeholder="конкретное действие"><br>
+          Я пойму, что идея интересна людям, если <input class="blank" id="m_signal" placeholder="какой отклик">
+        </div>
+      </div>
+      <div class="practice-result"><b>Твой результат:</b> один денежный эксперимент вместо пяти новых направлений сразу.</div>
+      <div class="copy-row">
+        <button class="btn btn-outline" onclick="copyPractice('model')">Сохранить мой эксперимент</button>
+        <span class="copy-confirm" id="confirm_model">Скопировано</span>
+      </div>
+    `,
+    build:()=>{
+      const g = id => (document.getElementById(id)||{}).value || '…';
+      return `МОИ ПУТИ РОСТА\n\n— Усилить существующее: ${g('m_row1')}\n— Добавить близкое направление: ${g('m_row2')}\n— Изменить модель: ${g('m_row3')}\n\nЭксперимент на 7 дней: проверю ${g('m_check')}. Сделаю: ${g('m_action')}. Пойму, что интересно, если: ${g('m_signal')}`;
+    }
+  },
+  system: {
+    title:'Составь денежный минимум на семь дней',
+    intro:'Не строй сложную систему из десятков таблиц. Она должна работать и в обычную неделю, не только на подъёме мотивации.',
+    html:`
+      <div class="step">
+        <div class="step-head"><div class="step-num">1</div><div class="step-label">Рассортируй неделю</div></div>
+        <div class="step-desc">Выпиши мысленно все рабочие задачи на ближайшую неделю и отметь: Д — действие может привести к деньгам; П — поддерживающая задача; З — создаёт занятость, но сейчас не влияет на доход.</div>
+      </div>
+      <div class="step">
+        <div class="step-head"><div class="step-num">2</div><div class="step-label">Выбери только два денежных действия</div></div>
+        <div class="formula-box" style="line-height:2.3;">
+          Моё действие для привлечения: <input class="blank" id="s_attract" placeholder="пост / отклик / сообщение"><br>
+          День и время: <input class="blank" id="s_attract_time" placeholder="когда"><br>
+          Моё действие для продажи: <input class="blank" id="s_sell" placeholder="оффер / приглашение / разговор"><br>
+          День и время: <input class="blank" id="s_sell_time" placeholder="когда">
+        </div>
+      </div>
+      <div class="static-note">В конце недели оценивай не количество часов работы, а: сколько предложений ты сделала, сколько разговоров о деньгах начала, сколько ответов получила, сколько продаж или договорённостей произошло.</div>
+      <div class="practice-result" style="margin-top:18px;"><b>Твой результат:</b> простой денежный план, который можно повторять каждую неделю.</div>
+      <div class="copy-row">
+        <button class="btn btn-outline" onclick="copyPractice('system')">Сохранить план на неделю</button>
+        <span class="copy-confirm" id="confirm_system">Скопировано</span>
+      </div>
+    `,
+    build:()=>{
+      const g = id => (document.getElementById(id)||{}).value || '…';
+      return `МОЙ ДЕНЕЖНЫЙ ПЛАН НА НЕДЕЛЮ\n\nПривлечение: ${g('s_attract')} — ${g('s_attract_time')}\nПродажа: ${g('s_sell')} — ${g('s_sell_time')}`;
+    }
+  }
+};
+
+/* ============ PRACTICE SCREEN ============ */
+function goToPractice(){
+  show('screen-practice');
+  renderPracticeTabs();
+  renderPracticeContent(lowestIndices[activePracticeIdx]);
+}
+
+function renderPracticeTabs(){
+  const wrap = document.getElementById('tabsWrap');
+  wrap.innerHTML = '';
+  if(lowestIndices.length > 1){
+    const tabsDiv = document.createElement('div');
+    tabsDiv.className = 'tabs';
+    lowestIndices.forEach((idx, n)=>{
+      const tab = document.createElement('div');
+      tab.className = 'tab' + (n===activePracticeIdx ? ' active' : '');
+      tab.textContent = SECTIONS[idx].title;
+      tab.onclick = ()=>{ activePracticeIdx = n; renderPracticeTabs(); renderPracticeContent(lowestIndices[activePracticeIdx]); };
+      tabsDiv.appendChild(tab);
+    });
+    wrap.appendChild(tabsDiv);
+  }
+}
+
+function renderPracticeContent(sectionIndex){
+  const sec = SECTIONS[sectionIndex];
+  const p = PRACTICE[sec.key];
+  document.getElementById('practiceHeading').textContent = p.title;
+  document.getElementById('practiceSub').textContent = p.intro;
+  document.getElementById('practiceContent').innerHTML = p.html;
+}
+
+function selectChoice(el){
+  const list = el.parentElement;
+  list.querySelectorAll('.choice').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function copyPractice(key){
+  const text = PRACTICE[key].build();
+  const confirmEl = document.getElementById('confirm_'+key);
+  try{
+    navigator.clipboard.writeText(text).then(()=>{
+      confirmEl.classList.add('show');
+      setTimeout(()=>confirmEl.classList.remove('show'), 2200);
+    });
+  }catch(e){
+    confirmEl.textContent = 'Не удалось скопировать';
+    confirmEl.classList.add('show');
+  }
+}
+
+/* ============ TRANSITION: REFLECT + CTA ============ */
+const REFLECT_OPTIONS = [
+  {v:'clear', l:'Я поняла, что именно нужно делать.', bridge:'Отлично — тогда самое время закрепить это разбором, который учтёт именно твою карту, а не общую диагностику.'},
+  {v:'value', l:'Мне трудно увидеть собственную ценность.', bridge:'Это нормально: со стороны свою ценность видно яснее. В разборе я подсвечу твои сильные денежные качества.'},
+  {v:'choice', l:'У меня появилось несколько вариантов, и я не знаю, какой выбрать.', bridge:'Разбор по натальной карте как раз помогает выбрать, на чём сосредоточиться в первую очередь.'},
+  {v:'delay', l:'Я знаю, что делать, но постоянно откладываю.', bridge:'Тогда дело не в знаниях, а в фокусе — разбор поможет понять, что конкретно тормозит именно тебя.'},
+  {v:'complex', l:'Моя ситуация сложнее, чем показывает тест.', bridge:'Общий тест не может учесть все нюансы — разбор смотрит именно твою карту и твою ситуацию.'}
+];
+
+function goToTransition(){
+  show('screen-transition');
+  const list = document.getElementById('reflectList');
+  list.innerHTML = '';
+  REFLECT_OPTIONS.forEach(opt=>{
+    const el = document.createElement('div');
+    el.className = 'choice';
+    el.innerHTML = `<div class="radio"></div>${opt.l}`;
+    el.onclick = ()=>selectReflect(opt, el);
+    list.appendChild(el);
+  });
+  document.getElementById('bridgeText').classList.remove('show');
+  document.getElementById('ctaWrap').classList.remove('show');
+}
+
+function selectReflect(opt, el){
+  document.querySelectorAll('#reflectList .choice').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+
+  const bridge = document.getElementById('bridgeText');
+  bridge.textContent = opt.bridge;
+  bridge.classList.add('show');
+
+  const ctaWrap = document.getElementById('ctaWrap');
+  ctaWrap.classList.add('show');
+
+  setTimeout(()=>{ ctaWrap.scrollIntoView({behavior:'smooth', block:'start'}); }, 150);
+
+  const tgUsername = 'jain1109';
+  const vkDirectUrl = 'https://vk.ru/im?sel=-224753072';
+
+  function summaryText(){
+    const idx = lowestIndices[0];
+    const scoreEl = document.querySelector('.bar-row.lowest .score');
+    return `ДОХОД\n\nМоя точка роста: ${SECTIONS[idx].title} — ${scoreEl ? scoreEl.textContent : ''}`;
+  }
+
+  const tgBtn = document.getElementById('tgBtn');
+  tgBtn.href = `https://t.me/${tgUsername}?text=${encodeURIComponent('ДОХОД')}`;
+  tgBtn.onclick = function(e){
+    e.preventDefault();
+    try{ navigator.clipboard.writeText(summaryText()); }catch(err){}
+    window.open(tgBtn.href, '_blank', 'noopener');
+  };
+
+  const vkBtn = document.getElementById('vkBtn');
+  vkBtn.href = vkDirectUrl;
+  vkBtn.onclick = function(e){
+    e.preventDefault();
+    try{ navigator.clipboard.writeText(summaryText()); }catch(err){}
+    window.open(vkDirectUrl, '_blank', 'noopener');
+  };
+}
+
+function restartQuiz(){
+  answers = new Array(FLAT.length).fill(null);
+  current = 0;
+  lowestIndices = [];
+  activePracticeIdx = 0;
+  show('screen-cover');
+}
+</script>
+</body>
+</html>
